@@ -15,6 +15,8 @@ var regexps = {
   videoRe: /http:\/\/(www\.)?(youtube|vimeo|youku|tudou|56|yinyuetai)\.com/i
 };
 
+var tagsToRemove = 'script,noscript';
+
 var dbg;
 exports.debug = function(debug) {
   dbg = (debug) ? console.log : function() {};
@@ -65,9 +67,9 @@ var prepDocument = module.exports.prepDocument = function(document) {
     }
   }
   
-  // Strip out all <script> tags, as they *should* be useless
-  var scripts = document.getElementsByTagName('script');
-  [].forEach.call(scripts, function (node) {
+  // Strip out all tags that we know won't contain primary content
+  var unwantedNodes = document.querySelectorAll(tagsToRemove);
+  [].forEach.call(unwantedNodes, function (node) {
     node.parentNode.removeChild(node);
   });
 
